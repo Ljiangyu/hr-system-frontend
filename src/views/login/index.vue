@@ -5,15 +5,15 @@
       <h1>登录</h1>
       <el-card shadow="never" class="login-card">
         <!--登录表单-->
-        <el-form>
-          <el-form-item>
-            <el-input v-model="username" placeholder="请输入用户名" />
+        <el-form ref="form" :model="loginForm" :rules="rules">
+          <el-form-item prop="username">
+            <el-input v-model="loginForm.username" placeholder="请输入用户名" />
           </el-form-item>
-          <el-form-item>
-            <el-input v-model="password" placeholder="请输入密码" />
+          <el-form-item prop="password">
+            <el-input v-model="loginForm.password" show-password placeholder="请输入密码" />
           </el-form-item>
-          <el-form-item>
-            <el-checkbox v-model="checked">相关协议</el-checkbox>
+          <el-form-item prop="isAgree">
+            <el-checkbox v-model="loginForm.isAgree">相关协议</el-checkbox>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" style="width:100%">登录</el-button>
@@ -42,8 +42,38 @@
 <script>
 // 122
 export default {
-  name: 'Login'
+  name: 'Login',
+  data() {
+    return {
+      loginForm: {
+        username: '',
+        password: '',
+        isAgree: false
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 6, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
+        ],
+        isAgree: [
+          { required: true, message: '请勾选协议', trigger: 'change' }
+        ]
+      },
+      isHovering: false,
+      register() {
+        this.$message({
+          message: '注册',
+          type: 'success'
+        })
+      }
+    }
+  }
 }
+
 </script>
 <style lang="scss">
 .login-container {
