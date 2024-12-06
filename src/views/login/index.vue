@@ -16,7 +16,7 @@
             <el-checkbox v-model="loginForm.isAgree">相关协议</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" style="width:100%">登录</el-button>
+            <el-button type="primary" style="width:100%" @click="login">登录</el-button>
           </el-form-item>
           <el-form-item>
             <span style="margin-right: 15px">没有账号？</span>
@@ -60,7 +60,14 @@ export default {
           { min: 6, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
         ],
         isAgree: [
-          { required: true, message: '请勾选协议', trigger: 'change' }
+          // { required: true, message: '请勾选协议', trigger: 'change' },
+          { validator: (rule, value, callback) => {
+            if (!value) {
+              return callback(new Error('请勾选协议'))
+            } else {
+              return callback()
+            }
+          } }
         ]
       },
       isHovering: false,
@@ -70,6 +77,16 @@ export default {
           type: 'success'
         })
       }
+    }
+  },
+  methods: {
+    // 进行数据校验
+    login() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          alert('ok')
+        }
+      })
     }
   }
 }
