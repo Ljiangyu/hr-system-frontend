@@ -1,4 +1,6 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, removeToken, setToken } from '@/utils/auth'
+import { login } from '@/api/user'
+
 const state = {
   token: getToken()
 }
@@ -14,11 +16,11 @@ const mutations = {
 }
 
 const actions = {
-  login(context, data) {
-    console.log(data)
-    // todo:: api 登陆接口
-    // token 123456
-    context.commit('setToken', '123456')
+  async login(context, data) {
+    const res = await login(data)
+    console.log('========login=====')
+    console.log(res)
+    context.commit('setToken', res)
   }
 }
 
