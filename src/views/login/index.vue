@@ -40,6 +40,7 @@
   </div>
 </template>
 <script>
+import service from '@/utils/request'
 // 122
 export default {
   name: 'Login',
