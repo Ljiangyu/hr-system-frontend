@@ -46,9 +46,9 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '',
-        password: '',
-        isAgree: false
+        username: process.env.node_env === 'development' ? 'admin111' : '',
+        password: process.env.node_env === 'development' ? '123456' : '',
+        isAgree: process.env.node_env !== 'development'
       },
       rules: {
         username: [
@@ -82,9 +82,10 @@ export default {
   methods: {
     // 进行数据校验
     login() {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
-          this.$store.dispatch('user/login', this.loginForm)
+          await this.$store.dispatch('user/login', this.loginForm)
+          this.$router.push('/')// 跳转首页
         }
       })
     }
