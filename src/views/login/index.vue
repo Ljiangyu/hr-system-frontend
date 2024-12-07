@@ -46,9 +46,9 @@ export default {
   data() {
     return {
       loginForm: {
-        username: process.env.node_env === 'development' ? 'admin111' : '',
-        password: process.env.node_env === 'development' ? '123456' : '',
-        isAgree: process.env.node_env !== 'development'
+        username: process.env.NODE_ENV === 'development' ? 'admin111' : '',
+        password: process.env.NODE_ENV === 'development' ? '123456' : '',
+        isAgree: process.env.NODE_ENV !== 'development'
       },
       rules: {
         username: [
@@ -84,6 +84,8 @@ export default {
     login() {
       this.$refs.form.validate(async valid => {
         if (valid) {
+          console.log('===================')
+          console.log(process.env.NODE_ENV)
           await this.$store.dispatch('user/login', this.loginForm)
           this.$router.push('/')// 跳转首页
         }
