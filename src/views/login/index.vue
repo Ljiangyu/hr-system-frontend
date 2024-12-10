@@ -10,22 +10,24 @@
             <el-input v-model="loginForm.username" placeholder="请输入用户名" />
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="loginForm.password" show-password placeholder="请输入密码" />
+            <el-input
+              v-model="loginForm.password"
+              show-password
+              placeholder="请输入密码"
+            />
           </el-form-item>
           <el-form-item prop="isAgree">
             <el-checkbox v-model="loginForm.isAgree">相关协议</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" style="width:100%" @click="login">登录</el-button>
+            <el-button type="primary" style="width: 100%" @click="login"
+              >登录</el-button
+            >
           </el-form-item>
           <el-form-item>
             <span style="margin-right: 15px">没有账号？</span>
             <span
-              style="
-              color: #409EFF;
-              cursor: pointer;
-              font-weight: bold;
-            "
+              style="color: #409eff; cursor: pointer; font-weight: bold"
               :style="{ textDecoration: isHovering ? 'underline' : 'none' }"
               @click="register"
               @mouseover="isHovering = true"
@@ -42,58 +44,70 @@
 <script>
 // 122
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
       loginForm: {
-        username: process.env.NODE_ENV === 'development' ? 'admin111' : '',
-        password: process.env.NODE_ENV === 'development' ? '123456' : '',
-        isAgree: process.env.NODE_ENV !== 'development'
+        username: process.env.NODE_ENV === "development" ? "admin111" : "",
+        password: process.env.NODE_ENV === "development" ? "123456" : "",
+        isAgree: process.env.NODE_ENV !== "development",
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 6, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 6,
+            max: 10,
+            message: "长度在 6 到 10 个字符",
+            trigger: "blur",
+          },
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 10,
+            message: "长度在 6 到 10 个字符",
+            trigger: "blur",
+          },
         ],
         isAgree: [
           // { required: true, message: '请勾选协议', trigger: 'change' },
-          { validator: (rule, value, callback) => {
-            if (!value) {
-              return callback(new Error('请勾选协议'))
-            } else {
-              return callback()
-            }
-          } }
-        ]
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback(new Error("请勾选协议"));
+              } else {
+                return callback();
+              }
+            },
+          },
+        ],
       },
       isHovering: false,
       register() {
         this.$message({
-          message: '注册',
-          type: 'success'
-        })
-      }
-    }
+          message: "注册",
+          type: "success",
+        });
+      },
+    };
   },
   methods: {
     // 进行数据校验
     login() {
-      this.$refs.form.validate(async valid => {
+      this.$refs.form.validate(async (valid) => {
         if (valid) {
-          console.log('===================')
-          console.log(process.env.NODE_ENV)
-          await this.$store.dispatch('user/login', this.loginForm)
-          this.$router.push('/')// 跳转首页
+          console.log("===================");
+          console.log(process.env.NODE_ENV);
+          console.log("开发环境");
+          await this.$store.dispatch("user/login", this.loginForm);
+          this.$router.push("/"); // 跳转首页
         }
-      })
-    }
-  }
-}
-
+      });
+    },
+  },
+};
 </script>
 <style lang="scss">
 .login-container {
@@ -103,7 +117,7 @@ export default {
   .logo {
     flex: 3;
     background: rgba(38, 72, 176) url(../../assets/common/login_back.png)
-    no-repeat center / cover;
+      no-repeat center / cover;
     border-top-right-radius: 60px;
     display: flex;
     flex-direction: column;
@@ -147,7 +161,7 @@ export default {
       }
     }
     .el-checkbox {
-      color:#606266;
+      color: #606266;
     }
   }
 }
