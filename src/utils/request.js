@@ -2,6 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -25,6 +26,8 @@ service.interceptors.request.use(
                     console.error('Token encoding error:', e);
                 }
             }
+        } else {
+            router.push({ path: '/login' })
         }
         return config;
     },
@@ -53,7 +56,13 @@ service.interceptors.response.use(
             return response
         }
     },
-    error => {
+    async error => {
+        // 清除token & 用于登陆信息
+        console.log("401" + "00000")
+        if (error.response.status === 401) {
+            await store.dispatch('user/logout')
+            router.push({ path: '/login' })
+        }
         console.log('err' + error) // for debug
         Message({
             message: error.message,

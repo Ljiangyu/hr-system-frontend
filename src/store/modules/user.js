@@ -42,6 +42,10 @@ const actions = {
         console.log('========res=====')
         console.log(res)
         context.commit('setUserInfo', res.data.data)
+    },
+    logout(context) {
+        context.commit('removeToken')
+        context.commit('setUserInfo', {})
     }
 }
 
