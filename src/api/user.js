@@ -22,4 +22,16 @@ export function getUserInfo() {
         url: '/user/getInfo'
     })
 }
+/**
+ * 更新用户密码
+ * @param {*} data 
+ * @returns 
+ */
+export function updateUserPwd(data) {
+    return request({
+        url: '/user/updatePwd',
+        method: 'post',
+        data
+    })
+}
 

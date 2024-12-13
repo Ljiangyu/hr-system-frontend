@@ -51,23 +51,40 @@
     </div>
     <!-- update修改密码弹窗 -->
     <!-- .sync 可以接受子组件传递的数据 -->
-    <el-dialog width="500px" title="修改密码" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="旧密码" :label-width="formLabelWidth">
+    <el-dialog
+      width="500px"
+      title="修改密码"
+      @close="btnCancel"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form ref="form" :rules="rules" :model="form">
+        <el-form-item
+          prop="form.oldName"
+          label="旧密码"
+          :label-width="formLabelWidth"
+        >
           <el-input
             show-password
             v-model="form.oldName"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="新密码" :label-width="formLabelWidth">
+        <el-form-item
+          prop="form.newName"
+          label="新密码"
+          :label-width="formLabelWidth"
+        >
           <el-input
             show-password
             v-model="form.newName"
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" :label-width="formLabelWidth">
+        <el-form-item
+          prop="form.nnewName"
+          label="确认密码"
+          :label-width="formLabelWidth"
+        >
           <el-input
             show-password
             v-model="form.nnewName"
@@ -77,9 +94,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消更改</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false"
-          >确认更改</el-button
-        >
+        <el-button type="primary" @click="updatePassword">确认更改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -89,7 +104,7 @@
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
-
+import { updateUserPwd } from "@/api/user";
 export default {
   data() {
     return {
@@ -98,6 +113,22 @@ export default {
         oldName: "",
         newName: "",
         nnewName: "",
+      },
+      rules: {
+        oldName: [{ required: true, message: "请输入旧密码", trigger: "blur" }],
+        newName: [{ required: true, message: "请输入新密码", trigger: "blur" }],
+        nnewName: [
+          { required: true, message: "请输入确认密码", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              if (value !== this.form.newName) {
+                callback(new Error("两次输入密码不一致!"));
+              } else {
+                callback();
+              }
+            },
+          },
+        ],
       },
       formLabelWidth: "80px",
     };
@@ -111,7 +142,21 @@ export default {
   },
   methods: {
     updatePassword() {
-      this.dialogFormVisible = true;
+      this.$refs["form"].validate(async (valid) => {
+        if (valid) {
+          await updateUserPwd(this.form);
+          this.$message({
+            type: "success",
+            message: "修改成功!",
+          });
+          this.dialogFormVisible = false;
+          this.$refs["form"].resetFields();
+        }
+      });
+    },
+    btnCancel() {
+      this.dialogFormVisible = false;
+      this.$refs["form"].resetFields();
     },
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
