@@ -18,13 +18,19 @@
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> Home </el-dropdown-item>
+            <el-dropdown-item> 首页 </el-dropdown-item>
           </router-link>
           <a
             target="_blank"
-            href="https://github.com/PanJiaChen/vue-admin-template/"
+            href="https://github.com/Ljiangyu/hr-system-frontend"
           >
-            <el-dropdown-item>Github</el-dropdown-item>
+            <el-dropdown-item>前端</el-dropdown-item>
+          </a>
+          <a
+            target="_blank"
+            href="https://github.com/Ljiangyu/hr-system-backend"
+          >
+            <el-dropdown-item>后端</el-dropdown-item>
           </a>
           <a
             target="_blank"
@@ -32,12 +38,50 @@
           >
             <el-dropdown-item>Docs</el-dropdown-item>
           </a>
+          <!-- 避免a 标签的原生操作 -->
+          <a target="_blank" @click.prevent="updatePassword">
+            <el-dropdown-item>修改密码</el-dropdown-item>
+          </a>
+          <!-- element的原生组件，注册本地事件 -->
           <el-dropdown-item divided @click.native="logout">
-            <span style="display: block">Log Out</span>
+            <span style="display: block">Logout</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <!-- update修改密码弹窗 -->
+    <!-- .sync 可以接受子组件传递的数据 -->
+    <el-dialog width="500px" title="修改密码" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="旧密码" :label-width="formLabelWidth">
+          <el-input
+            show-password
+            v-model="form.oldName"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" :label-width="formLabelWidth">
+          <el-input
+            show-password
+            v-model="form.newName"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" :label-width="formLabelWidth">
+          <el-input
+            show-password
+            v-model="form.nnewName"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消更改</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false"
+          >确认更改</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,6 +91,17 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 
 export default {
+  data() {
+    return {
+      dialogFormVisible: false,
+      form: {
+        oldName: "",
+        newName: "",
+        nnewName: "",
+      },
+      formLabelWidth: "80px",
+    };
+  },
   components: {
     Breadcrumb,
     Hamburger,
@@ -55,6 +110,9 @@ export default {
     ...mapGetters(["sidebar", "avatar", "name"]),
   },
   methods: {
+    updatePassword() {
+      this.dialogFormVisible = true;
+    },
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
