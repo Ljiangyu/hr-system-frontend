@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <div class="app-container">
-      <el-tree default-expand-all :data="depts" :props="props">
+      <el-tree
+        :expand-on-click-node="false"
+        default-expand-all
+        :data="depts"
+        :props="props"
+      >
         <template v-slot="{ data }">
           <el-row
             style="width: 100%; height: 40px"
@@ -13,14 +18,14 @@
             <el-col :span="4">
               <!-- <span class="tree-manager"> 管理员 </span>  -->
               <!-- 下拉菜单项 -->
-              <el-dropdown>
+              <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   操作<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>添加子部门</el-dropdown-item>
-                  <el-dropdown-item>编辑子部门</el-dropdown-item>
-                  <el-dropdown-item>删除</el-dropdown-item>
+                  <el-dropdown-item command="add">添加子部门</el-dropdown-item>
+                  <el-dropdown-item command="edit">编辑子部门</el-dropdown-item>
+                  <el-dropdown-item command="del">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
@@ -28,17 +33,22 @@
         </template>
       </el-tree>
     </div>
+    <add-dept :showDialog.sync="showDialog"></add-dept>
   </div>
 </template>
 
 <script>
+import AddDept from "./component/add-dept.vue";
 import { getDepartmentList } from "@/api/department";
+import addDept from "./component/add-dept.vue";
 export default {
+  components: { addDept },
   name: "Department",
   data() {
     return {
       depts: [],
       props: { children: "children", label: "name" },
+      showDialog: false,
     };
   },
   async created() {
@@ -51,6 +61,11 @@ export default {
       console.log("=============");
       console.log(depts.data.data);
       this.depts = [depts.data.data];
+    },
+    handleCommand(type) {
+      if (type === "add") {
+        this.showDialog = true;
+      }
     },
   },
 };
