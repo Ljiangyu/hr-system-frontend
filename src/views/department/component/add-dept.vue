@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增部门" :visible="showDialog" @close="btnCancel">
+  <el-dialog :title="isEdit" :visible="showDialog" @close="btnCancel">
     <!-- 使用 el-form -->
     <el-form ref="addDept" :model="formData" label-width="120px">
       <el-form-item label="部门名称">
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { addDepartment } from '@/api/department'
+import { updateDepartment, addDepartment, getDepartmentDetails } from '@/api/department'
 export default {
   props: {
     showDialog: {
@@ -62,13 +62,31 @@ export default {
       }
     }
   },
+  computed: {
+    isEdit() {
+      return this.currentId ? '编辑部门' : '新增部门'
+    }
+  },
   methods: {
     btnCancel() {
       this.$refs.addDept.resetFields()
+      this.formData = { // 手动清空数据
+        code: '',
+        name: '',
+        parentId: ''
+      }
+      this.$emit('update:currentId', 0) // 重置 currentId
       this.$emit('update:showDialog', false)
     },
     async isOk() {
-      if (this.currentId) {
+      if (this.formData.code !== 0) {
+        const res = await updateDepartment(this.formData)
+        if (res.data.code === 200) {
+          this.$message.success('修改部门成功')
+          this.$emit('updateDepts')
+          this.btnCancel()
+        }
+      } else {
         // this.formData.pid = this.currentId
         const res = await addDepartment({ ...this.formData, parentId: this.currentId })
         console.log(res)
@@ -81,6 +99,15 @@ export default {
     },
     isCancel() {
       this.btnCancel()
+    },
+    async getDepartmentDetail() {
+      const res = await getDepartmentDetails(this.currentId)
+      const departmentDetail = res.data.data
+      this.formData = {
+        code: departmentDetail.id || '',
+        name: departmentDetail.name || '',
+        parentId: departmentDetail.parentId || ''
+      }
     }
   }
 }

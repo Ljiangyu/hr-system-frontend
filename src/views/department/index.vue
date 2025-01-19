@@ -34,7 +34,7 @@
         </template>
       </el-tree>
     </div>
-    <add-dept :current-id="currentId" :show-dialog.sync="showDialog" @updateDepts="getDepts" />
+    <add-dept ref="addDept" :current-id="currentId" :show-dialog.sync="showDialog" @updateDepts="getDepts" />
   </div>
 </template>
 
@@ -67,7 +67,20 @@ export default {
       this.currentId = id
       console.log(type, id)
       if (type === 'add') {
+        this.currentId = 0
         this.showDialog = true
+      } else if (type === 'edit') {
+        this.$nextTick(() => {
+          console.log('edit===========')
+          this.$refs.addDept.getDepartmentDetail()
+          this.showDialog = true
+        })
+      } else if (type === 'del') {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {})
       }
     }
   }
