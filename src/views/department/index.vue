@@ -7,6 +7,7 @@
         :data="depts"
         :props="props"
       >
+        <!-- 父组件传递的数据通过插槽的形式进行传递 -->
         <template v-slot="{ data }">
           <el-row
             style="width: 100%; height: 40px"
@@ -18,9 +19,9 @@
             <el-col :span="4">
               <!-- <span class="tree-manager"> 管理员 </span>  -->
               <!-- 下拉菜单项 -->
-              <el-dropdown @command="handleCommand">
+              <el-dropdown @command="handleCommand($event,data.id)">
                 <span class="el-dropdown-link">
-                  操作<i class="el-icon-arrow-down el-icon--right"></i>
+                  操作<i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="add">添加子部门</el-dropdown-item>
@@ -33,42 +34,44 @@
         </template>
       </el-tree>
     </div>
-    <add-dept :showDialog.sync="showDialog"></add-dept>
+    <add-dept :current-id="currentId" :show-dialog.sync="showDialog" @updateDepts="getDepts" />
   </div>
 </template>
 
 <script>
-import AddDept from "./component/add-dept.vue";
-import { getDepartmentList } from "@/api/department";
-import addDept from "./component/add-dept.vue";
+import { getDepartmentList } from '@/api/department'
+import addDept from './component/add-dept.vue'
 export default {
+  name: 'Department',
   components: { addDept },
-  name: "Department",
   data() {
     return {
+      currentId: '',
       depts: [],
-      props: { children: "children", label: "name" },
-      showDialog: false,
-    };
+      props: { children: 'children', label: 'name' },
+      showDialog: false
+    }
   },
   async created() {
-    console.log("created");
-    this.getDepts();
+    console.log('created')
+    this.getDepts()
   },
   methods: {
     async getDepts() {
-      const depts = await getDepartmentList();
-      console.log("=============");
-      console.log(depts.data.data);
-      this.depts = [depts.data.data];
+      const depts = await getDepartmentList()
+      console.log('=============')
+      console.log(depts.data.data)
+      this.depts = [depts.data.data]
     },
-    handleCommand(type) {
-      if (type === "add") {
-        this.showDialog = true;
+    handleCommand(type, id) {
+      this.currentId = id
+      console.log(type, id)
+      if (type === 'add') {
+        this.showDialog = true
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style>
