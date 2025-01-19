@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { getDepartmentList } from '@/api/department'
+import { deleteDepartment, getDepartmentList } from '@/api/department'
 import addDept from './component/add-dept.vue'
 export default {
   name: 'Department',
@@ -80,7 +80,15 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(async() => {})
+        }).then(async() => {
+          await deleteDepartment(id).then(res => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getDepts()
+          })
+        })
       }
     }
   }

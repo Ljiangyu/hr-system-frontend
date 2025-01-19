@@ -45,3 +45,15 @@ export function updateDepartment(data) {
     data
   })
 }
+
+/**
+ * 删除数据
+ * @param {部门编号} id
+ * @returns
+ */
+export function deleteDepartment(id) {
+  return request({
+    url: `/department/delete/${id}`,
+    method: 'get'
+  })
+}
